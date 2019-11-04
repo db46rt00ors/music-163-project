@@ -1,0 +1,6 @@
+rem($value){
+      if (unit($value) == 'px' || unit($value) == ''){
+          $value = round($value / 16 ,3)
+          unit($value, 'rem')
+      }  
+  }
