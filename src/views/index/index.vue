@@ -1,53 +1,59 @@
 <template>
-    <div class="content" v-height="50">
-        <div class="swiper">
-            <swiper :options="swiperOption">
-                <!-- slides -->
-                <swiper-slide
-                    v-for="(item, index) of swiperList"
-                    :key="index"
-                    style="touch-action: none;"
-                >
-                    <img :src="item.imgUrl" srcset alt />
-                </swiper-slide>
-                <!-- Optional controls -->
-                <div class="swiper-pagination" slot="pagination"></div>
-            </swiper>
-        </div>
-        <div class="music-content">
-            <div class="music-album">
-                <h3>热门专辑</h3>
-                <ul>
-                    <li v-for="(item, index) in album" :key="index" @click="showAlbum(item, index)">
-                        <img :src="item.albumImg" alt />
-                        <p>{{item.albumTitle}}</p>
-                    </li>
-                </ul>
-            </div>
-            <div class="music-recommend">
-                <h3>热门单曲</h3>
-                <!-- <span>{{recommend}}</span> -->
-                <ul>
-                    <li
-                        v-for="(item, index) in recommend"
+    <vue-pull-refresh :on-refresh="onRefresh">
+        <div class="content" v-height="50">
+            <div class="swiper">
+                <swiper :options="swiperOption">
+                    <!-- slides -->
+                    <swiper-slide
+                        v-for="(item, index) of swiperList"
                         :key="index"
-                        @click="playRecommend(recommend, index)"
-                        :class="{cur: index == $store.state.audio.index && $store.state.audio.albumIndex == null}"
+                        style="touch-action: none;"
                     >
-                        <span
-                            class="xuhao iconfont"
-                            :class="{'icon-laba': index == $store.state.audio.index &&  $store.state.audio.albumIndex == null}"
-                        >{{index == $store.state.audio.index && $store.state.audio.albumIndex == null ? '' : index + 1}}</span>
-                        <div>
-                            <p>{{item.musicName}}</p>
-                            <p>{{item.musicSinger}}</p>
-                        </div>
-                        <span class="iconfont icon-bofang"></span>
-                    </li>
-                </ul>
+                        <img :src="item.imgUrl" srcset alt />
+                    </swiper-slide>
+                    <!-- Optional controls -->
+                    <div class="swiper-pagination" slot="pagination"></div>
+                </swiper>
+            </div>
+            <div class="music-content">
+                <div class="music-album">
+                    <h3>热门专辑</h3>
+                    <ul>
+                        <li
+                            v-for="(item, index) in album"
+                            :key="index"
+                            @click="showAlbum(item, index)"
+                        >
+                            <img :src="item.albumImg" alt />
+                            <p>{{item.albumTitle}}</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="music-recommend">
+                    <h3>热门单曲</h3>
+                    <!-- <span>{{recommend}}</span> -->
+                    <ul>
+                        <li
+                            v-for="(item, index) in recommend"
+                            :key="index"
+                            @click="playRecommend(recommend, index)"
+                            :class="{cur: index == $store.state.audio.index && $store.state.audio.albumIndex == null}"
+                        >
+                            <span
+                                class="xuhao iconfont"
+                                :class="{'icon-laba': index == $store.state.audio.index &&  $store.state.audio.albumIndex == null}"
+                            >{{index == $store.state.audio.index && $store.state.audio.albumIndex == null ? '' : index + 1}}</span>
+                            <div>
+                                <p>{{item.musicName}}</p>
+                                <p>{{item.musicSinger}}</p>
+                            </div>
+                            <span class="iconfont icon-bofang"></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
+    </vue-pull-refresh>
 </template>
 
 <script>
@@ -97,6 +103,9 @@ export default {
         this.$store.dispatch("GETMUSIC");
     },
     methods: {
+        onRefresh: function() {
+            this.$store.dispatch("GETMUSIC");
+        },
         showAlbum(item, index) {
             // console.log("item: ", item);
             // console.log("index: ", index)
@@ -125,7 +134,7 @@ export default {
 
 <style scoped lang='stylus'>
 .content {
-    overflow-y: auto;
+    overflow-y: scroll;
 
     .swiper {
         img {
